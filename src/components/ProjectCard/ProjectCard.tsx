@@ -170,13 +170,13 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   return (
     <>
       <Card padding="md" radius="md" withBorder opacity={project.completed ? 0.85 : 1}>
-        <Stack gap="md">
+        <Stack gap="sm">
           {/* Card Header */}
-          <Group justify="space-between" align="flex-start" wrap="nowrap">
+          <Group justify="space-between" align="flex-start" wrap="wrap" gap="xs">
             {/* Top Left: Project Name (Large & Bold) & Info */}
-            <Stack gap={4} flex={1} style={{ minWidth: 0 }}>
+            <Stack gap={4} flex={1} style={{ minWidth: 200 }}>
               {isEditingName ? (
-                <Group gap="xs">
+                <Group gap="xs" wrap="nowrap">
                   <TextInput
                     value={editingName}
                     onChange={(e) => setEditingName(e.currentTarget.value)}
@@ -186,7 +186,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                     }}
                     autoFocus
                     size="sm"
-                    maw={350}
+                    maw={{ base: '100%', sm: 350 }}
                     flex={1}
                   />
                   <ActionIcon color="teal" size="sm" onClick={handleSaveName}>
@@ -200,7 +200,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                 <Group gap="xs" wrap="wrap">
                   <Group gap={6}>
                     <IconBuilding size={18} />
-                    <Text fw={800} fz="md">
+                    <Text fw={800} fz={{ base: 'sm', sm: 'md' }}>
                       {project.projectName}
                     </Text>
                   </Group>
@@ -316,7 +316,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
               {/* Garbage can only. No text. */}
               <ActionIcon
                 variant="default"
-                size="md"
+                size="32px"
                 radius="md"
                 onClick={() => setShowDeleteConfirm(true)}
                 title="Delete project"
@@ -328,7 +328,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           </Group>
 
           {/* Duration & Progress Bars */}
-          <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
+          <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
             <DurationBar createdDate={project.createdDate} dueDate={project.dueDate} />
             <ProgressBar taskList={project.taskList} />
           </SimpleGrid>

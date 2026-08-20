@@ -78,7 +78,8 @@ export const GlobalNotepad: React.FC<GlobalNotepadProps> = ({ isOpen, onClose })
       opened={isOpen}
       onClose={onClose}
       position="right"
-      size="md"
+      size="100%"
+      maw={{ base: '100%', sm: 460 }}
       title={
         <Group gap="sm">
           <ThemeIcon color="gray" variant="light" size="lg" radius="md">

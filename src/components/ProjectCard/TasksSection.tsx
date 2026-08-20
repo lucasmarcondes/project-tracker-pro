@@ -118,32 +118,37 @@ export const TasksSection: React.FC<TasksSectionProps> = ({
         <Stack p="sm" gap="xs">
           {/* Add Task Form */}
           {isAdding && (
-            <form onSubmit={handleSaveNewTask}>
-              <Group gap="xs">
-                <TextInput
-                  autoFocus
-                  placeholder="Enter task name..."
-                  value={newTaskText}
-                  onChange={(e) => setNewTaskText(e.currentTarget.value)}
-                  size="xs"
-                  flex={1}
-                />
-                <Button size="xs" variant="filled" type="submit">
-                  Save
-                </Button>
-                <Button
-                  size="xs"
-                  variant="default"
-                  type="button"
-                  onClick={() => {
-                    setIsAdding(false);
-                    setNewTaskText('');
-                  }}
-                >
-                  Cancel
-                </Button>
-              </Group>
-            </form>
+            <Paper p="xs" radius="sm" withBorder>
+              <form onSubmit={handleSaveNewTask}>
+                <Stack gap="xs">
+                  <TextInput
+                    autoFocus
+                    placeholder="Enter task name..."
+                    value={newTaskText}
+                    onChange={(e) => setNewTaskText(e.currentTarget.value)}
+                    size="xs"
+                    radius="sm"
+                  />
+                  <Group justify="flex-end" gap="xs">
+                    <Button
+                      size="xs"
+                      variant="default"
+                      type="button"
+                      onClick={() => {
+                        setIsAdding(false);
+                        setNewTaskText('');
+                      }}
+                      radius="sm"
+                    >
+                      Cancel
+                    </Button>
+                    <Button size="xs" variant="filled" type="submit" radius="sm" fw={700}>
+                      Save Task
+                    </Button>
+                  </Group>
+                </Stack>
+              </form>
+            </Paper>
           )}
 
           {taskList.length === 0 && !isAdding && (
@@ -157,9 +162,9 @@ export const TasksSection: React.FC<TasksSectionProps> = ({
 
             return (
               <Paper key={task.id} p="xs" radius="sm" withBorder>
-                <Group justify="space-between" align="center" wrap="nowrap">
+                <Group justify="space-between" align="center" wrap="nowrap" gap="xs">
                   {/* Left: Checkbox & Text */}
-                  <Group gap="sm" wrap="nowrap" flex={1} style={{ minWidth: 0 }}>
+                  <Group gap="xs" wrap="nowrap" flex={1} style={{ minWidth: 0 }}>
                     <Checkbox
                       checked={task.completed}
                       onChange={() => onToggleTaskComplete(task.id)}
@@ -169,7 +174,7 @@ export const TasksSection: React.FC<TasksSectionProps> = ({
                     />
 
                     {isEditing ? (
-                      <Group gap="xs" flex={1}>
+                      <Group gap="xs" flex={1} wrap="nowrap">
                         <TextInput
                           size="xs"
                           value={editingText}
@@ -204,6 +209,7 @@ export const TasksSection: React.FC<TasksSectionProps> = ({
                           fw={600}
                           td={task.completed ? 'line-through' : undefined}
                           c={task.completed ? 'dimmed' : undefined}
+                          style={{ wordBreak: 'break-word' }}
                         >
                           {task.text}
                         </Text>
@@ -223,7 +229,7 @@ export const TasksSection: React.FC<TasksSectionProps> = ({
                   </Group>
 
                   {/* Right Actions: Calendar 📅, Edit ✏, Delete 🗑 */}
-                  <Group gap={4} wrap="nowrap">
+                  <Group gap={2} wrap="nowrap">
                     {/* Calendar Popover */}
                     <Popover position="bottom-end" withArrow shadow="md">
                       <Popover.Target>

@@ -8,6 +8,7 @@ import {
   SegmentedControl,
   Select,
   Stack,
+  Text,
   TextInput,
   Tooltip,
 } from '@mantine/core';
@@ -58,15 +59,22 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
   onToggleNotepad,
 }) => {
   return (
-    <Stack gap="md">
+    <Stack gap="xs">
       {/* Top Main Navigation & Action Bar */}
-      <Group justify="space-between" align="center" wrap="wrap" gap="md">
+      <Flex
+        justify="space-between"
+        align={{ base: 'stretch', sm: 'center' }}
+        direction={{ base: 'column', sm: 'row' }}
+        gap="xs"
+      >
         {/* Tabs: Active Jobs vs Completed Jobs */}
         <SegmentedControl
           value={activeTab}
           onChange={(val) => onTabChange(val as TabMode)}
           size="sm"
           radius="md"
+          fullWidth
+          style={{ maxWidth: 360 }}
           data={[
             {
               value: 'active',
@@ -91,41 +99,47 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
 
         {/* Global Action Buttons */}
         <Group gap="xs" wrap="wrap">
-          <Button
-            variant="default"
-            radius="md"
-            size="sm"
-            leftSection={<IconCalendar size={15} />}
-            onClick={onOpenCalendarModal}
-            fw={600}
-          >
-            Calendar
-          </Button>
+          <Group gap="xs">
+            <Tooltip label="Calendar Schedule">
+              <Button
+                variant="default"
+                radius="md"
+                size="sm"
+                leftSection={<IconCalendar size={15} />}
+                onClick={onOpenCalendarModal}
+                fw={600}
+                px={{ base: 'xs', sm: 'sm' }}
+              >
+                Calendar
+              </Button>
+            </Tooltip>
 
-          <Tooltip label="Import / Export Backup">
-            <ActionIcon
-              variant="default"
-              size="lg"
-              radius="md"
-              onClick={onOpenImportExportModal}
-              aria-label="Database Backup"
-            >
-              <IconDatabase size={16} />
-            </ActionIcon>
-          </Tooltip>
+            <Tooltip label={isNotepadOpen ? 'Hide Global Notepad' : 'Show Global Notepad'}>
+              <Button
+                variant={isNotepadOpen ? 'light' : 'default'}
+                size="sm"
+                radius="md"
+                leftSection={<IconBook2 size={15} />}
+                onClick={onToggleNotepad}
+                fw={600}
+                px={{ base: 'xs', sm: 'sm' }}
+              >
+                Notepad
+              </Button>
+            </Tooltip>
 
-          <Tooltip label={isNotepadOpen ? 'Hide Global Notepad' : 'Show Global Notepad'}>
-            <Button
-              variant={isNotepadOpen ? 'light' : 'default'}
-              size="sm"
-              radius="md"
-              leftSection={<IconBook2 size={15} />}
-              onClick={onToggleNotepad}
-              fw={600}
-            >
-              Notepad
-            </Button>
-          </Tooltip>
+            <Tooltip label="Import / Export Backup">
+              <ActionIcon
+                variant="default"
+                size="36px"
+                radius="md"
+                onClick={onOpenImportExportModal}
+                aria-label="Database Backup"
+              >
+                <IconDatabase size={16} />
+              </ActionIcon>
+            </Tooltip>
+          </Group>
 
           <Button
             variant="filled"
@@ -134,11 +148,12 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
             leftSection={<IconPlus size={16} stroke={2.5} />}
             onClick={onOpenCreateModal}
             fw={700}
+            flex={{ base: 1, sm: 'initial' }}
           >
             New Project
           </Button>
         </Group>
-      </Group>
+      </Flex>
 
       {/* Filter, Search & View Controls Bar */}
       <Paper p="xs" radius="md" withBorder>
@@ -146,12 +161,12 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
           justify="space-between"
           align={{ base: 'stretch', sm: 'center' }}
           direction={{ base: 'column', sm: 'row' }}
-          gap="sm"
+          gap="xs"
         >
           {/* Search Input */}
           <TextInput
             flex={1}
-            placeholder="Search projects by name, number, or template..."
+            placeholder="Search projects..."
             leftSection={<IconSearch size={15} />}
             rightSection={
               searchQuery ? (
@@ -171,21 +186,22 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
             size="sm"
           />
 
-          <Group gap="xs" wrap="nowrap">
+          <Group gap="xs" wrap="wrap">
             {/* Sort Dropdown */}
             <Select
               value={sortOption}
               onChange={(val) => val && onSortChange(val as SortOption)}
               data={[
-                { value: 'alphabetical', label: 'Alphabetical (A-Z)' },
-                { value: 'projectNo', label: 'Project Number (Lowest → Highest)' },
                 { value: 'dueDate', label: 'Due Date (Soonest)' },
-                { value: 'timeRemaining', label: 'Time Remaining (Urgent)' },
+                { value: 'timeRemaining', label: 'Urgent Remaining' },
+                { value: 'alphabetical', label: 'A-Z Name' },
+                { value: 'projectNo', label: 'Project #' },
               ]}
               radius="md"
               size="sm"
               allowDeselect={false}
-              w={{ base: '100%', sm: 220 }}
+              flex={{ base: 1, sm: 'initial' }}
+              w={{ base: '100%', xs: 180, sm: 200 }}
             />
 
             {/* View Mode Toggle: Details vs Compact */}
@@ -198,18 +214,22 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
                 {
                   value: 'details',
                   label: (
-                    <Center style={{ gap: 6, padding: '0 4px' }}>
-                      <IconList size={16} />
-                      <span>Details</span>
+                    <Center style={{ gap: 4, padding: '0 2px' }}>
+                      <IconList size={15} />
+                      <Text size="xs" visibleFrom="xs">
+                        Details
+                      </Text>
                     </Center>
                   ),
                 },
                 {
                   value: 'compact',
                   label: (
-                    <Center style={{ gap: 6, padding: '0 4px' }}>
-                      <IconLayoutGrid size={16} />
-                      <span>Compact</span>
+                    <Center style={{ gap: 4, padding: '0 2px' }}>
+                      <IconLayoutGrid size={15} />
+                      <Text size="xs" visibleFrom="xs">
+                        Compact
+                      </Text>
                     </Center>
                   ),
                 },

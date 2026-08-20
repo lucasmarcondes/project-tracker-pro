@@ -14,17 +14,17 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ taskList }) => {
 
   return (
     <Stack gap={6}>
-      <Group justify="space-between" align="center">
+      <Group justify="space-between" align="center" wrap="wrap" gap={4}>
         <Group gap={6}>
           <IconCircleCheck size={14} color="var(--mantine-color-teal-5)" />
           <Text size="xs" fw={700} c="dimmed">
-            Task Progress
+            Progress
           </Text>
         </Group>
 
-        <Group gap="xs">
+        <Group gap="xs" wrap="wrap">
           <Text size="xs" fw={700}>
-            {completed} completed out of {total} {total === 1 ? 'task' : 'tasks'}
+            {completed}/{total} {total === 1 ? 'task' : 'tasks'}
           </Text>
           <Badge color="blue" variant="light" size="sm" radius="sm" fw={800}>
             {percent}%

@@ -1,6 +1,7 @@
 import {
   ActionIcon,
   Badge,
+  Box,
   Button,
   Group,
   Modal,
@@ -31,6 +32,7 @@ interface CalendarModalProps {
 
 export const CalendarModal: React.FC<CalendarModalProps> = ({ isOpen, onClose, projects }) => {
   const [currentDate, setCurrentDate] = useState(() => new Date());
+  const [selectedDateStr, setSelectedDateStr] = useState<string>(() => formatDateToISO(new Date()));
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -44,7 +46,9 @@ export const CalendarModal: React.FC<CalendarModalProps> = ({ isOpen, onClose, p
   };
 
   const handleToday = () => {
-    setCurrentDate(new Date());
+    const today = new Date();
+    setCurrentDate(today);
+    setSelectedDateStr(formatDateToISO(today));
   };
 
   const firstDayOfMonth = new Date(year, month, 1).getDay();
@@ -132,78 +136,78 @@ export const CalendarModal: React.FC<CalendarModalProps> = ({ isOpen, onClose, p
     });
   }
 
+  const selectedEvents = eventsByDate.get(selectedDateStr) || [];
+
   return (
     <Modal
       opened={isOpen}
       onClose={onClose}
       title={
-        <Group justify="space-between" align="center" style={{ width: '100%' }}>
-          <Group gap="sm">
-            <ThemeIcon color="gray" variant="light" size="lg" radius="md">
-              <IconCalendar size={18} />
-            </ThemeIcon>
-            <div>
-              <Text fw={700} size="md">
-                Construction Master Calendar
-              </Text>
-              <Text size="xs" c="dimmed">
-                Project Due Dates & Scheduled Field Tasks
-              </Text>
-            </div>
-          </Group>
-
-          <Group gap="xs" mr="xl">
-            <Button size="xs" variant="default" onClick={handleToday}>
-              Today
-            </Button>
-            <Group gap={4}>
-              <ActionIcon
-                variant="default"
-                size="sm"
-                onClick={handlePrevMonth}
-                aria-label="Previous Month"
-              >
-                <IconChevronLeft size={14} />
-              </ActionIcon>
-              <Text size="xs" fw={700} style={{ minWidth: 120, textAlign: 'center' }}>
-                {monthName}
-              </Text>
-              <ActionIcon
-                variant="default"
-                size="sm"
-                onClick={handleNextMonth}
-                aria-label="Next Month"
-              >
-                <IconChevronRight size={14} />
-              </ActionIcon>
-            </Group>
-          </Group>
+        <Group gap="sm">
+          <ThemeIcon color="gray" variant="light" size="lg" radius="md">
+            <IconCalendar size={18} />
+          </ThemeIcon>
+          <div>
+            <Text fw={700} size="md">
+              Construction Master Calendar
+            </Text>
+            <Text size="xs" c="dimmed">
+              Project Due Dates & Scheduled Field Tasks
+            </Text>
+          </div>
         </Group>
       }
       size="90%"
       radius="md"
     >
       <Stack gap="sm">
-        {/* Legend */}
+        {/* Month Navigation & Controls */}
         <Paper p="xs" radius="md" withBorder>
-          <Group gap="md">
-            <Text size="xs" fw={700} c="dimmed" tt="uppercase">
-              Legend:
-            </Text>
-            <Badge color="yellow" variant="light" size="xs">
-              Project Due Date
-            </Badge>
-            <Badge color="blue" variant="light" size="xs">
-              Scheduled Task
-            </Badge>
-            <Badge color="teal" variant="light" size="xs">
-              Completed
-            </Badge>
+          <Group justify="space-between" align="center" wrap="wrap" gap="xs">
+            <Group gap="xs">
+              <Button size="xs" variant="default" onClick={handleToday} radius="sm">
+                Today
+              </Button>
+              <Group gap={4}>
+                <ActionIcon
+                  variant="default"
+                  size="sm"
+                  onClick={handlePrevMonth}
+                  aria-label="Previous Month"
+                >
+                  <IconChevronLeft size={14} />
+                </ActionIcon>
+                <Text size="xs" fw={700} style={{ minWidth: 110, textAlign: 'center' }}>
+                  {monthName}
+                </Text>
+                <ActionIcon
+                  variant="default"
+                  size="sm"
+                  onClick={handleNextMonth}
+                  aria-label="Next Month"
+                >
+                  <IconChevronRight size={14} />
+                </ActionIcon>
+              </Group>
+            </Group>
+
+            {/* Legend */}
+            <Group gap="xs" wrap="wrap">
+              <Badge color="yellow" variant="light" size="xs">
+                Project Due
+              </Badge>
+              <Badge color="blue" variant="light" size="xs">
+                Scheduled Task
+              </Badge>
+              <Badge color="teal" variant="light" size="xs">
+                Completed
+              </Badge>
+            </Group>
           </Group>
         </Paper>
 
         {/* Weekday headers */}
-        <SimpleGrid cols={7} spacing="xs">
+        <SimpleGrid cols={7} spacing={{ base: 4, sm: 'xs' }}>
           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
             <Text key={day} size="xs" fw={700} c="dimmed" ta="center" tt="uppercase">
               {day}
@@ -212,75 +216,159 @@ export const CalendarModal: React.FC<CalendarModalProps> = ({ isOpen, onClose, p
         </SimpleGrid>
 
         {/* 42 Calendar Cells Grid */}
-        <SimpleGrid cols={7} spacing="xs">
+        <SimpleGrid cols={7} spacing={{ base: 4, sm: 'xs' }}>
           {cells.map((cell) => {
             const dayEvents = eventsByDate.get(cell.dateStr) || [];
+            const isSelected = cell.dateStr === selectedDateStr;
 
             return (
               <Paper
                 key={cell.dateStr}
-                p={6}
+                p={{ base: 4, sm: 6 }}
                 radius="sm"
                 withBorder
+                onClick={() => setSelectedDateStr(cell.dateStr)}
                 style={{
-                  minHeight: 95,
+                  minHeight: 48,
+                  cursor: 'pointer',
                   opacity: cell.isCurrentMonth ? 1 : 0.4,
-                  borderColor: cell.isToday ? 'var(--mantine-primary-color-filled)' : undefined,
+                  borderColor: isSelected
+                    ? 'var(--mantine-primary-color-filled)'
+                    : cell.isToday
+                      ? 'var(--mantine-color-blue-5)'
+                      : undefined,
+                  borderWidth: isSelected || cell.isToday ? 2 : 1,
                   display: 'flex',
                   flexDirection: 'column',
+                  transition: 'all 0.15s ease',
                 }}
               >
-                <Group justify="space-between" align="center" mb={4}>
-                  <Text size="xs" fw={cell.isToday ? 800 : 600}>
+                <Group justify="space-between" align="center" mb={{ base: 2, sm: 4 }}>
+                  <Text size="xs" fw={cell.isToday || isSelected ? 800 : 600}>
                     {cell.dayNum}
                   </Text>
                   {dayEvents.length > 0 && (
-                    <Badge size="xs" variant="light" color="gray">
+                    <Badge size="xs" variant="light" color="gray" px={4}>
                       {dayEvents.length}
                     </Badge>
                   )}
                 </Group>
 
-                <ScrollArea.Autosize mah={65} scrollbarSize={4}>
-                  <Stack gap={2}>
-                    {dayEvents.map((evt, eIdx) => {
-                      const isDue = evt.type === 'project_due';
-                      const badgeColor = evt.completed ? 'teal' : isDue ? 'yellow' : 'blue';
+                {/* Mobile: Colored dots for events */}
+                <Group gap={3} hiddenFrom="sm" justify="center" mt="auto">
+                  {dayEvents.slice(0, 3).map((evt, idx) => {
+                    const isDue = evt.type === 'project_due';
+                    const color = evt.completed ? 'teal' : isDue ? 'yellow' : 'blue';
+                    return (
+                      <Box
+                        key={idx}
+                        w={5}
+                        h={5}
+                        style={{
+                          borderRadius: '50%',
+                          backgroundColor: `var(--mantine-color-${color}-6)`,
+                        }}
+                      />
+                    );
+                  })}
+                </Group>
 
-                      return (
-                        <Paper
-                          key={eIdx}
-                          p={3}
-                          radius="xs"
-                          withBorder
-                          style={{
-                            borderColor: `var(--mantine-color-${badgeColor}-6)`,
-                          }}
-                        >
-                          <Group gap={3} wrap="nowrap">
-                            {isDue ? (
-                              <IconFlag size={10} color="var(--mantine-color-yellow-6)" />
-                            ) : (
-                              <IconSquareCheck size={10} color="var(--mantine-color-blue-6)" />
+                {/* Desktop: Detailed Event Cards */}
+                <Box visibleFrom="sm" style={{ flex: 1 }}>
+                  <ScrollArea.Autosize mah={60} scrollbarSize={4}>
+                    <Stack gap={2}>
+                      {dayEvents.map((evt, eIdx) => {
+                        const isDue = evt.type === 'project_due';
+                        const badgeColor = evt.completed ? 'teal' : isDue ? 'yellow' : 'blue';
+
+                        return (
+                          <Paper
+                            key={eIdx}
+                            p={3}
+                            radius="xs"
+                            withBorder
+                            style={{
+                              borderColor: `var(--mantine-color-${badgeColor}-6)`,
+                            }}
+                          >
+                            <Group gap={3} wrap="nowrap">
+                              {isDue ? (
+                                <IconFlag size={10} color="var(--mantine-color-yellow-6)" />
+                              ) : (
+                                <IconSquareCheck size={10} color="var(--mantine-color-blue-6)" />
+                              )}
+                              <Text size="10px" fw={700} truncate style={{ flex: 1 }}>
+                                {evt.projectName}
+                              </Text>
+                            </Group>
+                            {evt.taskText && (
+                              <Text size="9px" c="dimmed" truncate pl={12}>
+                                {evt.taskText}
+                              </Text>
                             )}
-                            <Text size="10px" fw={700} truncate style={{ flex: 1 }}>
-                              {evt.projectName}
-                            </Text>
-                          </Group>
-                          {evt.taskText && (
-                            <Text size="9px" c="dimmed" truncate pl={12}>
-                              {evt.taskText}
-                            </Text>
-                          )}
-                        </Paper>
-                      );
-                    })}
-                  </Stack>
-                </ScrollArea.Autosize>
+                          </Paper>
+                        );
+                      })}
+                    </Stack>
+                  </ScrollArea.Autosize>
+                </Box>
               </Paper>
             );
           })}
         </SimpleGrid>
+
+        {/* Selected Day Agenda View */}
+        <Paper p="sm" radius="md" withBorder bg="var(--mantine-color-default-hover)">
+          <Stack gap="xs">
+            <Group justify="space-between" align="center">
+              <Text size="xs" fw={700} tt="uppercase" c="dimmed">
+                Scheduled for {selectedDateStr}
+              </Text>
+              <Badge size="xs" variant="light" color="gray">
+                {selectedEvents.length} items
+              </Badge>
+            </Group>
+
+            {selectedEvents.length === 0 ? (
+              <Text size="xs" c="dimmed" fs="italic">
+                No project deadlines or tasks scheduled for this date.
+              </Text>
+            ) : (
+              <Stack gap={6}>
+                {selectedEvents.map((evt, idx) => {
+                  const isDue = evt.type === 'project_due';
+                  const badgeColor = evt.completed ? 'teal' : isDue ? 'yellow' : 'blue';
+
+                  return (
+                    <Paper key={idx} p="xs" radius="sm" withBorder bg="var(--mantine-color-body)">
+                      <Group justify="space-between" align="center" wrap="nowrap">
+                        <Group gap="xs" wrap="nowrap" style={{ minWidth: 0 }}>
+                          <ThemeIcon color={badgeColor} variant="light" size="sm" radius="sm">
+                            {isDue ? <IconFlag size={13} /> : <IconSquareCheck size={13} />}
+                          </ThemeIcon>
+                          <Stack gap={1} style={{ minWidth: 0 }}>
+                            <Text size="xs" fw={700} truncate>
+                              {evt.projectName} (#{evt.projectNo})
+                            </Text>
+                            {evt.taskText && (
+                              <Text size="xs" c="dimmed" truncate>
+                                {evt.taskText}
+                              </Text>
+                            )}
+                          </Stack>
+                        </Group>
+
+                        <Badge color={badgeColor} variant="light" size="xs" radius="sm" fw={700}>
+                          {evt.completed ? 'Completed' : isDue ? 'Project Due' : 'Task Scheduled'}
+                        </Badge>
+                      </Group>
+                    </Paper>
+                  );
+                })}
+              </Stack>
+            )}
+          </Stack>
+        </Paper>
       </Stack>
     </Modal>
   );

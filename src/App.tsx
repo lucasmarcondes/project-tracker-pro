@@ -1,4 +1,5 @@
 import {
+  Affix,
   AppShell,
   Badge,
   Button,
@@ -220,25 +221,25 @@ export const App: React.FC = () => {
   }, [projects, activeTab, searchQuery, sortOption]);
 
   return (
-    <AppShell header={{ height: 60 }} padding="md">
+    <AppShell header={{ height: { base: 56, sm: 60 } }} padding={{ base: 'xs', sm: 'md' }}>
       {/* Top Header */}
       <AppShell.Header>
-        <Container size="xl" h="100%">
+        <Container size="xl" h="100%" px={{ base: 'xs', sm: 'md' }}>
           <Group justify="space-between" align="center" h="100%">
-            <Group gap="sm">
-              <ThemeIcon size="lg" radius="md" variant="default">
-                <IconHelmet size={20} />
+            <Group gap="xs">
+              <ThemeIcon size="md" radius="md" variant="default">
+                <IconHelmet size={18} />
               </ThemeIcon>
               <div>
                 <Group gap={6} align="center">
-                  <Text fw={800} fz="sm" style={{ letterSpacing: '0.2px' }}>
+                  <Text fw={800} fz={{ base: 'xs', sm: 'sm' }} style={{ letterSpacing: '0.2px' }}>
                     Project Tracker Pro
                   </Text>
                   <Badge variant="outline" color="gray" size="xs" fw={700}>
                     {version}
                   </Badge>
                 </Group>
-                <Text size="11px" c="dimmed">
+                <Text size="11px" c="dimmed" visibleFrom="xs">
                   Residential Construction & Restoration
                 </Text>
               </div>
@@ -257,8 +258,8 @@ export const App: React.FC = () => {
 
       {/* Main Container */}
       <AppShell.Main>
-        <Container size="xl" py="md">
-          <Stack gap="lg">
+        <Container size="xl" py={{ base: 'xs', sm: 'md' }} px={{ base: 'xs', sm: 'md' }}>
+          <Stack gap="md">
             {/* Dashboard Stats */}
             <StatsHeader stats={stats} activeTab={activeTab} onTabChange={handleTabChange} />
 
@@ -342,6 +343,23 @@ export const App: React.FC = () => {
           </Stack>
         </Container>
       </AppShell.Main>
+
+      {/* Mobile Floating Action Button (FAB) */}
+      <Affix position={{ bottom: 20, right: 20 }} hiddenFrom="sm">
+        <Button
+          size="md"
+          radius="xl"
+          variant="filled"
+          onClick={() => setIsCreateModalOpen(true)}
+          leftSection={<IconPlus size={18} stroke={2.5} />}
+          style={{
+            boxShadow: '0 4px 14px rgba(0, 0, 0, 0.25)',
+          }}
+          fw={700}
+        >
+          New
+        </Button>
+      </Affix>
 
       {/* Global Notepad Drawer */}
       <GlobalNotepad isOpen={isNotepadOpen} onClose={() => setIsNotepadOpen(false)} />

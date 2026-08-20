@@ -27,15 +27,15 @@ export const DurationBar: React.FC<DurationBarProps> = ({ createdDate, dueDate }
 
   return (
     <Stack gap={6}>
-      <Group justify="space-between" align="center">
+      <Group justify="space-between" align="center" wrap="wrap" gap={4}>
         <Group gap={6}>
           <IconClock size={14} color="var(--mantine-color-dimmed)" />
           <Text size="xs" fw={700} c="dimmed">
-            Project Timeline
+            Timeline
           </Text>
         </Group>
 
-        <Group gap="xs">
+        <Group gap="xs" wrap="wrap">
           {isOverdue ? (
             <Group gap={4}>
               <IconAlertTriangle size={14} color="var(--mantine-color-red-5)" />
@@ -50,7 +50,7 @@ export const DurationBar: React.FC<DurationBarProps> = ({ createdDate, dueDate }
           )}
 
           <Badge color={mantineColor} variant="light" size="sm" radius="sm" fw={800} tt="uppercase">
-            {isOverdue ? '0% Remaining' : `${percent}% Remaining`}
+            {isOverdue ? '0% Left' : `${percent}% Left`}
           </Badge>
         </Group>
       </Group>
