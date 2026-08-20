@@ -4,7 +4,7 @@ import type React from 'react';
 
 export const ThemeToggle: React.FC = () => {
   const { setColorScheme } = useMantineColorScheme();
-  const computedColorScheme = useComputedColorScheme('dark', { getInitialValueInEffect: true });
+  const computedColorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
 
   const isDark = computedColorScheme === 'dark';
 
