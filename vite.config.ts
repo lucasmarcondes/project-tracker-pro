@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: './', // Ensures relative asset paths for GitHub Pages deployment
+  base: process.env.BASE_URL || '/project-tracker-pro/',
   test: {
     globals: true,
     environment: 'node',
