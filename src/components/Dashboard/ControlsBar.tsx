@@ -1,6 +1,7 @@
 import {
   ActionIcon,
   Button,
+  Center,
   Flex,
   Group,
   Paper,
@@ -70,19 +71,19 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
             {
               value: 'active',
               label: (
-                <Group gap="xs" wrap="nowrap">
+                <Center style={{ gap: 6 }}>
                   <IconBriefcase size={15} />
                   <span>Active Jobs</span>
-                </Group>
+                </Center>
               ),
             },
             {
               value: 'completed',
               label: (
-                <Group gap="xs" wrap="nowrap">
+                <Center style={{ gap: 6 }}>
                   <IconCircleCheck size={15} />
                   <span>Completed Jobs</span>
-                </Group>
+                </Center>
               ),
             },
           ]}
@@ -197,21 +198,19 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
                 {
                   value: 'details',
                   label: (
-                    <Tooltip label="Details View">
-                      <ActionIcon variant="transparent" size="sm" c="inherit">
-                        <IconList size={15} />
-                      </ActionIcon>
-                    </Tooltip>
+                    <Center style={{ gap: 6, padding: '0 4px' }}>
+                      <IconList size={16} />
+                      <span>Details</span>
+                    </Center>
                   ),
                 },
                 {
                   value: 'compact',
                   label: (
-                    <Tooltip label="Compact View">
-                      <ActionIcon variant="transparent" size="sm" c="inherit">
-                        <IconLayoutGrid size={15} />
-                      </ActionIcon>
-                    </Tooltip>
+                    <Center style={{ gap: 6, padding: '0 4px' }}>
+                      <IconLayoutGrid size={16} />
+                      <span>Compact</span>
+                    </Center>
                   ),
                 },
               ]}
