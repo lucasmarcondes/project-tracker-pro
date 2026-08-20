@@ -26,7 +26,7 @@ import {
 import type React from 'react';
 import { useState } from 'react';
 import type { TaskItem } from '../../types/project';
-import { formatDisplayDate } from '../../utils/dates';
+import { formatDateToISO, formatDisplayDate, parseLocalDate } from '../../utils/dates';
 
 interface TasksSectionProps {
   taskList: TaskItem[];
@@ -245,9 +245,9 @@ export const TasksSection: React.FC<TasksSectionProps> = ({
                             size="xs"
                             placeholder="Pick date"
                             valueFormat="YYYY-MM-DD"
-                            value={task.dueDate || null}
+                            value={task.dueDate ? parseLocalDate(task.dueDate) : null}
                             onChange={(val) => {
-                              onSetTaskDueDate(task.id, val || undefined);
+                              onSetTaskDueDate(task.id, val ? formatDateToISO(val) : undefined);
                             }}
                             clearable
                             w={150}

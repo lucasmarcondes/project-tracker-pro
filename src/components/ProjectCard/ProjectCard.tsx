@@ -10,7 +10,7 @@ import {
   Text,
   TextInput,
 } from '@mantine/core';
-import { DateInput } from '@mantine/dates';
+import { DateInput, type DateValue } from '@mantine/dates';
 import {
   IconBuilding,
   IconCalendar,
@@ -25,7 +25,7 @@ import {
 import type React from 'react';
 import { useState } from 'react';
 import type { NoteItem, Project, TaskItem, ViewMode } from '../../types/project';
-import { formatDisplayDate } from '../../utils/dates';
+import { formatDateToISO, formatDisplayDate, parseLocalDate } from '../../utils/dates';
 import { ConfirmModal } from '../Modals/ConfirmModal';
 import { DurationBar } from './DurationBar';
 import { NotesSection } from './NotesSection';
@@ -57,7 +57,9 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   const [editingName, setEditingName] = useState(project.projectName);
 
   const [isEditingDueDate, setIsEditingDueDate] = useState(false);
-  const [editingDueDate, setEditingDueDate] = useState<string | null>(project.dueDate);
+  const [editingDueDate, setEditingDueDate] = useState<DateValue>(() =>
+    parseLocalDate(project.dueDate),
+  );
 
   const toggleTasksCollapse = () => {
     const current = project.collapsedSections?.tasks ?? false;
@@ -158,7 +160,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 
   const handleSaveDueDate = () => {
     if (editingDueDate) {
-      onUpdateProject({ ...project, dueDate: editingDueDate });
+      onUpdateProject({ ...project, dueDate: formatDateToISO(editingDueDate) });
     }
     setIsEditingDueDate(false);
   };
@@ -270,7 +272,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                         size="xs"
                         c="dimmed"
                         onClick={() => {
-                          setEditingDueDate(project.dueDate);
+                          setEditingDueDate(parseLocalDate(project.dueDate));
                           setIsEditingDueDate(true);
                         }}
                         title="Edit due date"

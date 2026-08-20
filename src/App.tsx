@@ -10,11 +10,11 @@ import {
   Text,
   ThemeIcon,
 } from '@mantine/core';
-import { version } from '../package.json';
 import { notifications } from '@mantine/notifications';
 import { IconBuilding, IconCircleCheck, IconHelmet, IconPlus } from '@tabler/icons-react';
 import type React from 'react';
 import { useEffect, useMemo, useState, useTransition } from 'react';
+import { version } from '../package.json';
 import { ControlsBar } from './components/Dashboard/ControlsBar';
 import { StatsHeader } from './components/Dashboard/StatsHeader';
 import { CalendarModal } from './components/Modals/CalendarModal';

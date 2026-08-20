@@ -11,7 +11,7 @@ import {
   TextInput,
   ThemeIcon,
 } from '@mantine/core';
-import { DateInput } from '@mantine/dates';
+import { DateInput, type DateValue } from '@mantine/dates';
 import {
   IconAlertCircle,
   IconBuilding,
@@ -28,6 +28,7 @@ import {
   calculateDueDateFromTemplate,
   formatDateToISO,
   getTasksForTemplate,
+  parseLocalDate,
 } from '../../utils/dates';
 import { ConfirmModal } from './ConfirmModal';
 
@@ -57,8 +58,8 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
   const [projectNo, setProjectNo] = useState('');
   const [projectName, setProjectName] = useState('');
   const [template, setTemplate] = useState<ProjectTemplate>('Addition/Renovation');
-  const [dueDate, setDueDate] = useState<string | null>(() =>
-    calculateDueDateFromTemplate('Addition/Renovation'),
+  const [dueDate, setDueDate] = useState<DateValue>(() =>
+    parseLocalDate(calculateDueDateFromTemplate('Addition/Renovation')),
   );
   const [showConfirm, setShowConfirm] = useState(false);
   const [validationError, setValidationError] = useState('');
@@ -78,7 +79,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
     const newTemplate = val as ProjectTemplate;
     setTemplate(newTemplate);
     const newDueDateStr = calculateDueDateFromTemplate(newTemplate);
-    setDueDate(newDueDateStr);
+    setDueDate(parseLocalDate(newDueDateStr));
   };
 
   const handleOpenConfirm = (e: React.FormEvent) => {
@@ -101,7 +102,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
 
   const handleConfirmCreate = () => {
     const createdDate = formatDateToISO(new Date());
-    const dueDateStr = dueDate || formatDateToISO(new Date());
+    const dueDateStr = dueDate ? formatDateToISO(dueDate) : formatDateToISO(new Date());
     const initialTasks = getTasksForTemplate(template).map((text, idx) => ({
       id: `task-${Date.now()}-${idx}`,
       text,
@@ -128,7 +129,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
     setProjectNo('');
     setProjectName('');
     setTemplate('Addition/Renovation');
-    setDueDate(calculateDueDateFromTemplate('Addition/Renovation'));
+    setDueDate(parseLocalDate(calculateDueDateFromTemplate('Addition/Renovation')));
     onClose();
 
     setTimeout(() => {
@@ -259,7 +260,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
           { label: 'Project No', value: projectNo },
           { label: 'Project Name', value: projectName },
           { label: 'Template', value: template },
-          { label: 'Due Date', value: dueDate || '' },
+          { label: 'Due Date', value: dueDate ? formatDateToISO(dueDate) : '' },
         ]}
         confirmText="Create"
         cancelText="Cancel"
